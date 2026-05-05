@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKTMonitor - Детали ККМ</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .section-title {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            margin: 20px 0 15px 0;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .section-title-green {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            margin: 20px 0 15px 0;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .section-title-orange {
+            background-color: #fd7e14;
+            color: white;
+            padding: 10px 15px;
+            margin: 20px 0 15px 0;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .details-label {
+            font-weight: bold;
+            color: #555;
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        .details-value {
+            padding: 12px;
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            word-break: break-word;
+        }
+        .clickable {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .clickable-white {
+            cursor: pointer;
+            color: white;
+            text-decoration: underline;
+        }
+        .clickable-white:hover {
+            color: #ffdddd;
+        }
+        .status-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .button-bar {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .modal-content {
+            max-width: 700px;
+            width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sd-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .sd-ok {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .sd-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .polling-stopped {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .transfer-clickable {
+            cursor: pointer;
+        }
+        .transfer-clickable:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Детальная информация о ККМ</h1>
+        
+        <div id="loading" class="loading">Загрузка данных...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="details-container" style="display: none;">
+            <!-- Данные о ККТ -->
+            <div class="section-title">📟 Данные о ККТ</div>
+            <div class="details-grid">
+                <div class="details-label">IP адрес:</div>
+                <div class="details-value" id="ipAddress">—</div>
+                
+                <div class="details-label">ЗН (Заводской номер):</div>
+                <div class="details-value" id="serialNumber">—</div>
+                
+                <div class="details-label">ИНН:</div>
+                <div class="details-value" id="inn">—</div>
+                
+                <div class="details-label">Наименование юридического лица:</div>
+                <div class="details-value" id="legalName">—</div>
+                
+                <div class="details-label">Версия прошивки ККТ:</div>
+                <div class="details-value" id="firmwareVersion">—</div>
+                
+                <div class="details-label">Тип ФФД:</div>
+                <div class="details-value" id="ffdVersion">—</div>
+                
+                <div class="details-label">URL ОФД:</div>
+                <div class="details-value" id="ofdUrl">—</div>
+                
+                <div class="details-label">Подрежим:</div>
+                <div class="details-value" id="advancedMode">—</div>
+                
+                <div class="details-label">Статус режима:</div>
+                <div class="details-value" id="modeStatus">—</div>
+                
+                <div class="details-label">Напряжение батареи:</div>
+                <div class="details-value" id="batteryVoltage">—</div>
+                
+                <div class="details-label">Напряжение источника:</div>
+                <div class="details-value" id="powerVoltage">—</div>
+                
+                <div class="details-label">Состояние SD карты:</div>
+                <div class="details-value" id="sdCardStatus">—</div>
+            </div>
+            
+            <!-- ФН данные -->
+            <div class="section-title">💾 ФН данные</div>
+            <div class="details-grid">
+                <div class="details-label">Дата первого чека (регистрации):</div>
+                <div class="details-value" id="firstReceiptDate">—</div>
+                
+                <div class="details-label">Дата последнего чека:</div>
+                <div class="details-value" id="lastReceiptDate">—</div>
+                
+                <div class="details-label">Номер последнего чека:</div>
+                <div class="details-value" id="lastReceiptNumber">—</div>
+                
+                <div class="details-label">Фаза жизни ФН:</div>
+                <div class="details-value" id="fnLifeState">—</div>
+                
+                <div class="details-label">Дата замены ФН:</div>
+                <div class="details-value" id="fnExpiryDate">—</div>
+                
+                <div class="details-label">Остаточная ёмкость ФН:</div>
+                <div class="details-value" id="remainingCapacity">—</div>
+            </div>
+            
+            <!-- Общие данные -->
+            <div class="section-title-green">📊 Общие данные</div>
+            <div class="details-grid">
+                <div class="details-label">Последний полный опрос:</div>
+                <div class="details-value" id="lastFullPoll">—</div>
+                
+                <div class="details-label">Статус ККМ:</div>
+                <div class="details-value" id="kktStatus">—</div>
+            </div>
+            
+            <!-- Передаваемые данные -->
+            <div class="section-title-orange transfer-clickable" onclick="showTransferData()">
+                📤 Передаваемые данные <span class="clickable-white">[подробно]</span>
+            </div>
+            
+            <!-- Кнопки управления -->
+            <div class="button-bar">
+                <button class="btn btn-secondary" onclick="window.location.href='/kktmonitor/'">← На главную</button>
+                <button class="btn btn-success" id="pollBtn" onclick="manualPoll()">🔄 Опрос ККМ</button>
+                <button class="btn btn-warning" id="stopPollingBtn" onclick="stopPolling()">⏹️ Остановить опрос</button>
+                <button class="btn btn-info" id="startPollingBtn" onclick="startPolling()" style="display: none;">▶️ Запустить опрос</button>
+                <button class="btn btn-primary" onclick="refreshDetails()">🔄 Обновить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для подробной информации -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Подробная информация</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody">
+                <pre id="modalPre"></pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="pollingIndicator" style="display: none; position: fixed; top: 10px; right: 10px; background: #ff9800; color: white; padding: 10px 15px; border-radius: 5px; z-index: 1000;">
+        ⏳ Выполняется опрос ККМ... Пожалуйста, подождите
+    </div>
+
+    <script src="/js/kkt-details.js"></script>
+</body>
+</html>

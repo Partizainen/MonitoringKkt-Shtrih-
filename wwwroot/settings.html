@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKTMonitor - Настройки</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .protected-section {
+            border: 1px solid #ffc107;
+            background-color: #fff8e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .password-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .password-section input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .smtp-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .smtp-form.visible {
+            display: block;
+        }
+        .zabbix-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .zabbix-form.visible {
+            display: block;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .form-row label {
+            display: inline-block;
+            width: 180px;
+            font-weight: 600;
+        }
+        .form-row input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+        }
+        .form-row select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .schedule-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        .schedule-table th, .schedule-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .schedule-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        .schedule-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .add-schedule {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .add-schedule input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .schedule-time {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .settings-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .settings-card h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        .interval-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .interval-input {
+            width: 80px;
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .warning-text {
+            color: #ffc107;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .email-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .email-group input {
+            flex: 1;
+            min-width: 250px;
+        }
+        .btn-test {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-test:hover {
+            background-color: #5a6268;
+        }
+        .btn-kkt-list {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .btn-kkt-list:hover {
+            background-color: #138496;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 950px;">
+        <h1>⚙️ Настройки системы</h1>
+        
+        <div class="btn-group" style="margin-bottom: 20px;">
+            <button class="btn btn-kkt-list" onclick="openKktList()">📋 Настройка списка ККМ</button>
+        </div>
+        
+        <div id="loading" class="loading">Загрузка настроек...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="success" class="success" style="display: none;"></div>
+        
+        <div id="settings-container" style="display: none;">
+            <!-- Планировщик -->
+            <div class="settings-card">
+                <h3>⏰ Планировщик</h3>
+                
+                <!-- Блок 1: Сетевая доступность -->
+                <div style="margin-bottom: 30px; border-left: 3px solid #17a2b8; padding-left: 15px;">
+                    <h4 style="color: #17a2b8; margin-bottom: 15px;">📡 Планировщик сетевой доступности</h4>
+                    <p style="color: #666; margin-bottom: 15px;">Интервал опроса доступности ККМ по сети (Ping)</p>
+                    
+                    <div class="interval-group">
+                        <input type="number" id="pollIntervalValue" class="interval-input" value="1" min="1" max="999">
+                        <select id="pollIntervalUnit">
+                            <option value="minutes">минут</option>
+                            <option value="hours" selected>часов</option>
+                        </select>
+                        <label class="toggle-switch" style="margin-left: 15px;">
+                            <input type="checkbox" id="pollIntervalEnabled" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span style="margin-left: 10px;">Активен</span>
+                    </div>
+                    <div class="warning-text" id="pollIntervalWarning" style="display: none;">
+                        ⚠️ При больших интервалах опроса данные о доступности ККМ могут быть неактуальными
+                    </div>
+                </div>
+                
+                <!-- Блок 2: Полные опросы -->
+                <div style="border-left: 3px solid #28a745; padding-left: 15px;">
+                    <h4 style="color: #28a745; margin-bottom: 15px;">📊 Планировщик полных опросов ККМ</h4>
+                    <p>Укажите время для автоматического выполнения полного опроса всех активных ККМ.</p>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Время (HH:MM)</th>
+                                    <th>Активен</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleTableBody">
+                                <tr><td colspan="3" style="text-align: center;">Загрузка...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="add-schedule">
+                        <input type="time" id="newScheduleTime" step="60">
+                        <button class="btn btn-primary" onclick="addSchedule()">➕ Добавить время опроса</button>
+                    </div>
+                    <small style="color: #666; margin-top: 10px; display: block;">
+                        Полный опрос будет выполняться в указанное время ежедневно для всех активных ККМ.
+                    </small>
+                </div>
+            </div>
+
+            <!-- Настройки уведомлений -->
+            <div class="settings-card">
+                <h3>📧 Email получателя уведомлений</h3>
+                <div class="form-group">
+                    <label>Email получателя:</label>
+                    <div class="email-group">
+                        <input type="email" id="notificationEmail" placeholder="example@mail.ru">
+                        <button class="btn btn-test" onclick="sendTestEmail()">📧 Тестовая отправка</button>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Уведомления отправляются при изменении статуса ККМ на Warning/Danger<br>
+                        и при длительной недоступности (>30 минут)
+                    </small>
+                </div>
+                <button class="btn btn-primary" onclick="saveNotificationEmail()">💾 Сохранить email</button>
+            </div>
+
+            <!-- Защищённый блок настроек SMTP -->
+            <div class="protected-section">
+                <h3>🔐 Настройки почтового ящика (SMTP)</h3>
+                <p>Для отправки уведомлений необходимо настроить SMTP-сервер.</p>
+                
+                <div class="password-section">
+                    <input type="password" id="smtpPassword" placeholder="Введите пароль для доступа к настройкам">
+                    <button class="btn btn-info" onclick="checkSmtpPassword()">🔓 Войти</button>
+                </div>
+                
+                <div id="smtpForm" class="smtp-form">
+                    <div class="form-row">
+                        <label>SMTP сервер:</label>
+                        <input type="text" id="smtpServer" placeholder="smtp.mail.ru">
+                    </div>
+                    <div class="form-row">
+                        <label>Порт:</label>
+                        <input type="number" id="smtpPort" placeholder="587">
+                    </div>
+                    <div class="form-row">
+                        <label>Пользователь:</label>
+                        <input type="text" id="smtpUser" placeholder="your_email@mail.ru">
+                    </div>
+                    <div class="form-row">
+                        <label>Пароль:</label>
+                        <input type="password" id="smtpAuthPassword" placeholder="******" autocomplete="off">
+                    </div>
+                    <div class="form-row">
+                        <label>Email отправителя:</label>
+                        <input type="email" id="fromEmail" placeholder="sender@mail.ru">
+                    </div>
+                    <div class="form-row">
+                        <label>Шифрование:</label>
+                        <select id="smtpEncryption">
+                            <option value="TLS">TLS (STARTTLS, порт 587)</option>
+                            <option value="SSL">SSL (порт 465)</option>
+                            <option value="None">Нет шифрования (порт 25)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSmtpSettings()">💾 Сохранить SMTP</button>
+                </div>
+            </div>
+
+            <!-- Защищённый блок настроек Zabbix -->
+            <div class="protected-section">
+                <h3>📊 Интеграция с Zabbix</h3>
+                <p>Настройки для отправки статусов ККМ в Zabbix через Zabbix Trapper</p>
+                
+                <div class="password-section">
+                    <input type="password" id="zabbixPassword" placeholder="Введите пароль для доступа к настройкам Zabbix">
+                    <button class="btn btn-info" onclick="checkZabbixPassword()">🔓 Войти</button>
+                </div>
+                
+                <div id="zabbixForm" class="zabbix-form">
+                    <div class="form-row">
+                        <label>Zabbix сервер:</label>
+                        <input type="text" id="zabbixServer" placeholder="127.0.0.1">
+                    </div>
+                    <div class="form-row">
+                        <label>Порт:</label>
+                        <input type="number" id="zabbixPort" placeholder="10051">
+                    </div>
+                    <div class="form-row">
+                        <label>Имя хоста в Zabbix:</label>
+                        <input type="text" id="zabbixHost" placeholder="kkt.hostname">
+                    </div>
+                    <div class="form-row">
+                        <label>Ключ элемента данных:</label>
+                        <input type="text" id="zabbixKey" placeholder="kkt.status">
+                    </div>
+                    <div class="form-row">
+                        <label>Статус:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="zabbixEnabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span style="margin-left: 10px;">Включить отправку в Zabbix</span>
+                    </div>
+                    <div class="btn-group" style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="saveZabbixSettings()">💾 Сохранить Zabbix</button>
+                        <button class="btn btn-secondary" onclick="testZabbixConnection()">🔌 Тест подключения</button>
+                    </div>
+                </div>
+                <small style="color: #666; margin-top: 10px; display: block;">
+                    Статусы ККМ будут отправляться в Zabbix как:<br>
+                    0 - OK, 1 - WARNING, 2 - DANGER
+                </small>
+            </div>
+            
+            <div class="btn-group" style="margin-top: 20px; justify-content: center;">
+                <button class="btn btn-secondary" onclick="window.location.href='/kktmonitor/'">← На главную</button>
+                <button class="btn btn-info" onclick="loadAllSettings()">🔄 Обновить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let schedules = [];
+
+        function openKktList() {
+            const password = prompt('Введите пароль для доступа к настройке списка ККМ:');
+            if (password === 'MonitoringKkt') {
+                window.location.href = '/kktmonitor/kkt-list.html';
+            } else if (password !== null) {
+                alert('Неверный пароль! Доступ запрещён.');
+            }
+        }
+
+        async function loadAllSettings() {
+            await loadSettings();
+            await loadSchedules();
+            await loadPollIntervalSettings();
+        }
+
+        async function loadSettings() {
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const settingsContainer = document.getElementById('settings-container');
+            
+            if (loading) loading.style.display = 'block';
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (settingsContainer) settingsContainer.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/settings');
+                if (!response.ok) throw new Error('Ошибка загрузки настроек: ' + response.status);
+                
+                const data = await response.json();
+                const emailInput = document.getElementById('notificationEmail');
+                if (emailInput) emailInput.value = data.notificationEmail || '';
+                
+                if (loading) loading.style.display = 'none';
+                if (settingsContainer) settingsContainer.style.display = 'block';
+            } catch (error) {
+                console.error('loadSettings error:', error);
+                if (loading) loading.style.display = 'none';
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                }
+            }
+        }
+
+        async function loadPollIntervalSettings() {
+            try {
+                const response = await fetch('/api/settings/pollInterval');
+                if (response.ok) {
+                    const data = await response.json();
+                    const intervalValue = document.getElementById('pollIntervalValue');
+                    const intervalUnit = document.getElementById('pollIntervalUnit');
+                    const intervalEnabled = document.getElementById('pollIntervalEnabled');
+                    
+                    if (intervalValue) intervalValue.value = data.intervalValue || 1;
+                    if (intervalUnit) intervalUnit.value = data.intervalUnit || 'hours';
+                    if (intervalEnabled) intervalEnabled.checked = data.isEnabled !== false;
+                    
+                    checkPollIntervalWarning();
+                }
+            } catch (error) {
+                console.error('loadPollIntervalSettings error:', error);
+            }
+        }
+
+        function checkPollIntervalWarning() {
+            const valueInput = document.getElementById('pollIntervalValue');
+            const unitSelect = document.getElementById('pollIntervalUnit');
+            const warning = document.getElementById('pollIntervalWarning');
+            
+            if (!valueInput || !unitSelect || !warning) return;
+            
+            const value = parseInt(valueInput.value) || 1;
+            const unit = unitSelect.value;
+            
+            if (unit === 'hours' && value >= 2) {
+                warning.style.display = 'block';
+            } else if (unit === 'minutes' && value >= 120) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        async function savePollIntervalSettings() {
+            const valueInput = document.getElementById('pollIntervalValue');
+            const unitSelect = document.getElementById('pollIntervalUnit');
+            const enabledCheckbox = document.getElementById('pollIntervalEnabled');
+            
+            if (!valueInput || !unitSelect || !enabledCheckbox) return;
+            
+            const value = parseInt(valueInput.value) || 1;
+            const unit = unitSelect.value;
+            const enabled = enabledCheckbox.checked;
+            
+            checkPollIntervalWarning();
+            
+            try {
+                await fetch('/api/settings/pollInterval', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        intervalValue: value, 
+                        intervalUnit: unit, 
+                        isEnabled: enabled 
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving poll interval:', error);
+            }
+        }
+
+        async function loadSchedules() {
+            const tbody = document.getElementById('scheduleTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Загрузка...</td></tr>';
+            
+            try {
+                const response = await fetch('/api/schedule');
+                if (!response.ok) throw new Error('Ошибка загрузки расписания: ' + response.status);
+                
+                schedules = await response.json();
+                
+                if (!schedules || schedules.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Нет запланированных опросов</td></tr>';
+                    return;
+                }
+                
+                renderScheduleTable();
+            } catch (error) {
+                console.error('loadSchedules error:', error);
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Ошибка загрузки: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function renderScheduleTable() {
+            const tbody = document.getElementById('scheduleTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            for (let i = 0; i < schedules.length; i++) {
+                const schedule = schedules[i];
+                const row = tbody.insertRow();
+                
+                const timeCell = row.insertCell(0);
+                const timeValue = schedule.scheduleTime || '--:--';
+                timeCell.innerHTML = '<span class="schedule-time">' + timeValue + '</span>';
+                
+                const activeCell = row.insertCell(1);
+                const isChecked = schedule.isActive === true || schedule.isActive === 1;
+                activeCell.innerHTML = '<label class="toggle-switch">' +
+                    '<input type="checkbox" ' + (isChecked ? 'checked' : '') + ' onchange="toggleScheduleActive(' + schedule.id + ', this.checked)">' +
+                    '<span class="toggle-slider"></span>' +
+                    '</label>';
+                
+                const actionsCell = row.insertCell(2);
+                actionsCell.innerHTML = '<button class="btn btn-sm btn-danger" onclick="deleteSchedule(' + schedule.id + ')">🗑️ Удалить</button>';
+            }
+        }
+
+        async function addSchedule() {
+            const timeInput = document.getElementById('newScheduleTime');
+            const timeValue = timeInput ? timeInput.value : '';
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (successDiv) successDiv.style.display = 'none';
+            
+            if (!timeValue) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Выберите время для опроса';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scheduleTime: timeValue, isActive: true })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка добавления');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Время ' + timeValue + ' добавлено!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+                if (timeInput) timeInput.value = '';
+                
+                await loadSchedules();
+            } catch (error) {
+                console.error('addSchedule error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            }
+        }
+
+        async function deleteSchedule(id) {
+            if (!confirm('Удалить этот запланированный опрос?')) return;
+            
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            
+            if (errorDiv) errorDiv.style.display = 'none';
+            if (successDiv) successDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/schedule/' + id, { method: 'DELETE' });
+                if (!response.ok) throw new Error('Ошибка удаления');
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Время опроса удалено!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+                await loadSchedules();
+            } catch (error) {
+                console.error('deleteSchedule error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            }
+        }
+
+        async function toggleScheduleActive(id, isActive) {
+            try {
+                const response = await fetch('/api/schedule/' + id + '/toggle?isActive=' + isActive, { method: 'PATCH' });
+                if (!response.ok) throw new Error('Ошибка изменения статуса');
+                
+                await loadSchedules();
+                
+                const successDiv = document.getElementById('success');
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Опрос ' + (isActive ? 'активирован' : 'деактивирован') + '!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 2000);
+                }
+            } catch (error) {
+                console.error('toggleScheduleActive error:', error);
+                await loadSchedules();
+            }
+        }
+
+        async function saveNotificationEmail() {
+            const emailInput = document.getElementById('notificationEmail');
+            const email = emailInput ? emailInput.value.trim() : '';
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (!email) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите email получателя';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            if (!email.includes('@') || !email.includes('.')) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите корректный email адрес';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const saveBtn = document.activeElement;
+            const originalText = saveBtn ? saveBtn.textContent : '💾 Сохранить email';
+            if (saveBtn && saveBtn.tagName === 'BUTTON') {
+                saveBtn.disabled = true;
+                saveBtn.textContent = '⏳ Сохранение...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/notificationEmail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(email)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка сохранения');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Email получателя сохранён!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+            } catch (error) {
+                console.error('saveNotificationEmail error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            } finally {
+                if (saveBtn && saveBtn.tagName === 'BUTTON') {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                }
+            }
+        }
+
+        async function sendTestEmail() {
+            const emailInput = document.getElementById('notificationEmail');
+            const email = emailInput ? emailInput.value.trim() : '';
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (!email) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Сначала сохраните email получателя';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const testBtn = document.querySelector('.btn-test');
+            const originalText = testBtn ? testBtn.textContent : '📧 Тестовая отправка';
+            if (testBtn) {
+                testBtn.disabled = true;
+                testBtn.textContent = '⏳ Отправка...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/testEmail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка отправки');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Тестовое письмо отправлено на ' + email + '!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 5000);
+                }
+            } catch (error) {
+                console.error('sendTestEmail error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                }
+            } finally {
+                if (testBtn) {
+                    testBtn.disabled = false;
+                    testBtn.textContent = originalText;
+                }
+            }
+        }
+
+        async function checkSmtpPassword() {
+            const passwordInput = document.getElementById('smtpPassword');
+            const password = passwordInput ? passwordInput.value : '';
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (!password) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите пароль';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            if (password !== 'MonitoringKkt') {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Неверный пароль. Доступ к настройкам SMTP запрещён.';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                }
+                return;
+            }
+            
+            const loginBtn = document.activeElement;
+            const originalText = loginBtn ? loginBtn.textContent : '🔓 Войти';
+            if (loginBtn && loginBtn.tagName === 'BUTTON') {
+                loginBtn.disabled = true;
+                loginBtn.textContent = '⏳ Проверка...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/smtp?password=' + encodeURIComponent(password));
+                
+                if (response.status === 401) {
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = 'Неверный пароль. Доступ к настройкам SMTP запрещён.';
+                        setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                    }
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки настроек');
+                }
+                
+                const data = await response.json();
+                const smtpServer = document.getElementById('smtpServer');
+                const smtpPort = document.getElementById('smtpPort');
+                const smtpUser = document.getElementById('smtpUser');
+                const fromEmail = document.getElementById('fromEmail');
+                const smtpEncryption = document.getElementById('smtpEncryption');
+                const smtpAuthPassword = document.getElementById('smtpAuthPassword');
+                const smtpForm = document.getElementById('smtpForm');
+                
+                if (smtpServer) smtpServer.value = data.smtpServer || '';
+                if (smtpPort) smtpPort.value = data.smtpPort || '587';
+                if (smtpUser) smtpUser.value = data.smtpUser || '';
+                if (fromEmail) fromEmail.value = data.fromEmail || '';
+                if (smtpEncryption) smtpEncryption.value = data.smtpEncryption || 'TLS';
+                
+                if (data.hasPassword && smtpAuthPassword) {
+                    smtpAuthPassword.placeholder = '•••••••••••••';
+                    smtpAuthPassword.value = '';
+                }
+                
+                if (smtpForm) smtpForm.classList.add('visible');
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Настройки SMTP загружены!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+            } catch (error) {
+                console.error('checkSmtpPassword error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            } finally {
+                if (loginBtn && loginBtn.tagName === 'BUTTON') {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = originalText;
+                }
+            }
+        }
+
+        async function saveSmtpSettings() {
+            const passwordInput = document.getElementById('smtpPassword');
+            const password = passwordInput ? passwordInput.value : '';
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (password !== 'MonitoringKkt') {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Неверный пароль. Нет доступа к сохранению SMTP.';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const smtpServerInput = document.getElementById('smtpServer');
+            const smtpPortInput = document.getElementById('smtpPort');
+            const smtpUserInput = document.getElementById('smtpUser');
+            const smtpAuthPassword = document.getElementById('smtpAuthPassword');
+            const fromEmailInput = document.getElementById('fromEmail');
+            const smtpEncryptionSelect = document.getElementById('smtpEncryption');
+            
+            let smtpPassword = smtpAuthPassword ? smtpAuthPassword.value : '';
+            let smtpEncryption = smtpEncryptionSelect ? smtpEncryptionSelect.value : 'TLS';
+            
+            const smtpSettings = {
+                smtpServer: smtpServerInput ? smtpServerInput.value.trim() : '',
+                smtpPort: parseInt(smtpPortInput ? smtpPortInput.value : '587') || 587,
+                smtpUser: smtpUserInput ? smtpUserInput.value.trim() : '',
+                smtpPassword: smtpPassword,
+                fromEmail: fromEmailInput ? fromEmailInput.value.trim() : '',
+                smtpEncryption: smtpEncryption
+            };
+            
+            if (!smtpSettings.smtpServer) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите SMTP сервер';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const saveBtn = document.querySelector('#smtpForm .btn-primary');
+            const originalText = saveBtn ? saveBtn.textContent : '💾 Сохранить SMTP';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = '⏳ Сохранение...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/smtp?password=' + encodeURIComponent(password), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(smtpSettings)
+                });
+                
+                if (response.status === 401) {
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = 'Неверный пароль. Настройки не сохранены.';
+                        setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                    }
+                    return;
+                }
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка сохранения');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Настройки SMTP сохранены!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+                
+                if (smtpAuthPassword) {
+                    smtpAuthPassword.value = '';
+                    smtpAuthPassword.placeholder = '•••••••••••••';
+                }
+            } catch (error) {
+                console.error('saveSmtpSettings error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                }
+            }
+        }
+
+        // Zabbix функции
+        async function checkZabbixPassword() {
+            const password = document.getElementById('zabbixPassword').value;
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (!password) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите пароль';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            if (password !== 'MonitoringKkt') {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Неверный пароль. Доступ к настройкам Zabbix запрещён.';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                }
+                return;
+            }
+            
+            const loginBtn = document.activeElement;
+            const originalText = loginBtn ? loginBtn.textContent : '🔓 Войти';
+            if (loginBtn && loginBtn.tagName === 'BUTTON') {
+                loginBtn.disabled = true;
+                loginBtn.textContent = '⏳ Проверка...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/zabbix?password=' + encodeURIComponent(password));
+                
+                if (response.status === 401) {
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = 'Неверный пароль. Доступ к настройкам Zabbix запрещён.';
+                        setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                    }
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки настроек');
+                }
+                
+                const data = await response.json();
+                const zabbixServer = document.getElementById('zabbixServer');
+                const zabbixPort = document.getElementById('zabbixPort');
+                const zabbixHost = document.getElementById('zabbixHost');
+                const zabbixKey = document.getElementById('zabbixKey');
+                const zabbixEnabled = document.getElementById('zabbixEnabled');
+                const zabbixForm = document.getElementById('zabbixForm');
+                
+                if (zabbixServer) zabbixServer.value = data.zabbixServer || '';
+                if (zabbixPort) zabbixPort.value = data.zabbixPort || 10051;
+                if (zabbixHost) zabbixHost.value = data.zabbixHost || '';
+                if (zabbixKey) zabbixKey.value = data.zabbixKey || 'kkt.status';
+                if (zabbixEnabled) zabbixEnabled.checked = data.zabbixEnabled || false;
+                
+                if (zabbixForm) zabbixForm.classList.add('visible');
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = 'Настройки Zabbix загружены!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+            } catch (error) {
+                console.error('checkZabbixPassword error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            } finally {
+                if (loginBtn && loginBtn.tagName === 'BUTTON') {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = originalText;
+                }
+            }
+        }
+
+        async function saveZabbixSettings() {
+            const password = document.getElementById('zabbixPassword').value;
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (password !== 'MonitoringKkt') {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Неверный пароль. Нет доступа к сохранению Zabbix.';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const zabbixServer = document.getElementById('zabbixServer');
+            const zabbixPort = document.getElementById('zabbixPort');
+            const zabbixHost = document.getElementById('zabbixHost');
+            const zabbixKey = document.getElementById('zabbixKey');
+            const zabbixEnabled = document.getElementById('zabbixEnabled');
+            
+            const zabbixSettings = {
+                zabbixServer: zabbixServer ? zabbixServer.value.trim() : '',
+                zabbixPort: parseInt(zabbixPort ? zabbixPort.value : '10051') || 10051,
+                zabbixHost: zabbixHost ? zabbixHost.value.trim() : '',
+                zabbixEnabled: zabbixEnabled ? zabbixEnabled.checked : false,
+                zabbixKey: zabbixKey ? zabbixKey.value.trim() : 'kkt.status'
+            };
+            
+            if (!zabbixSettings.zabbixServer) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Введите Zabbix сервер';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const saveBtn = document.querySelector('#zabbixForm .btn-primary');
+            const originalText = saveBtn ? saveBtn.textContent : '💾 Сохранить Zabbix';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = '⏳ Сохранение...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/zabbix?password=' + encodeURIComponent(password), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(zabbixSettings)
+                });
+                
+                if (response.status === 401) {
+                    if (errorDiv) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.textContent = 'Неверный пароль. Настройки не сохранены.';
+                        setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                    }
+                    return;
+                }
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка сохранения');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = '✅ Настройки Zabbix сохранены!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+            } catch (error) {
+                console.error('saveZabbixSettings error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = '❌ Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                }
+            }
+        }
+
+        async function testZabbixConnection() {
+            const password = document.getElementById('zabbixPassword').value;
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            
+            if (successDiv) successDiv.style.display = 'none';
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            if (password !== 'MonitoringKkt') {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = 'Неверный пароль. Нет доступа к тестированию Zabbix.';
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 3000);
+                }
+                return;
+            }
+            
+            const testBtn = document.activeElement;
+            const originalText = testBtn ? testBtn.textContent : '🔌 Тест подключения';
+            if (testBtn && testBtn.tagName === 'BUTTON') {
+                testBtn.disabled = true;
+                testBtn.textContent = '⏳ Проверка...';
+            }
+            
+            try {
+                const response = await fetch('/api/settings/zabbix/test?password=' + encodeURIComponent(password), {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ошибка подключения');
+                }
+                
+                if (successDiv) {
+                    successDiv.style.display = 'block';
+                    successDiv.textContent = '✅ Подключение к Zabbix успешно!';
+                    setTimeout(function() { successDiv.style.display = 'none'; }, 3000);
+                }
+            } catch (error) {
+                console.error('testZabbixConnection error:', error);
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = '❌ Ошибка: ' + error.message;
+                    setTimeout(function() { errorDiv.style.display = 'none'; }, 5000);
+                }
+            } finally {
+                if (testBtn && testBtn.tagName === 'BUTTON') {
+                    testBtn.disabled = false;
+                    testBtn.textContent = originalText;
+                }
+            }
+        }
+
+        document.getElementById('pollIntervalValue')?.addEventListener('change', savePollIntervalSettings);
+        document.getElementById('pollIntervalValue')?.addEventListener('input', checkPollIntervalWarning);
+        document.getElementById('pollIntervalUnit')?.addEventListener('change', savePollIntervalSettings);
+        document.getElementById('pollIntervalEnabled')?.addEventListener('change', savePollIntervalSettings);
+        
+        document.addEventListener('DOMContentLoaded', loadAllSettings);
+    </script>
+</body>
+</html>
