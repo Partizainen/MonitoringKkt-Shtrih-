@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKTMonitor - Мониторинг ККМ</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Мониторинг контрольно-кассовых машин</h1>
+        
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="refreshTable()">🔄 Обновить</button>
+            <button class="btn btn-secondary" onclick="goToOrganizations()">🏢 Организации</button>
+            <button class="btn btn-info" onclick="window.location.href='/settings.html'">⚙️ Настройки</button>
+            <button class="btn btn-warning" id="toggleInactiveBtn" onclick="toggleShowInactive()">🗑️ Показать неактивные</button>
+        </div>
+
+        <div id="loading" class="loading">Загрузка данных...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="table-container" style="display: none;">
+            <table id="kkt-table">
+                <thead>
+                    <tr>
+                        <th>Заводской номер</th>
+                        <th>Юридическое лицо</th>
+                        <th>Прозвище</th>
+                        <th>Последняя активность</th>
+                        <th>IP адрес</th>
+                        <th>Источник</th>
+                        <th>Состояние</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="kkt-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="nicknameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Редактирование прозвища</h3>
+                <span class="close" onclick="closeNicknameModal()">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Прозвище:</label>
+                <input type="text" id="nicknameInput" placeholder="Введите прозвище для ККМ">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="saveNickname()">Сохранить</button>
+                <button class="btn btn-secondary" onclick="closeNicknameModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deactivateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Деактивация ККМ</h3>
+                <span class="close" onclick="closeDeactivateModal()">&times;</span>
+            </div>
+            <p>Вы уверены, что хотите деактивировать ККМ <strong id="deactivateSerial">—</strong>?</p>
+            <p>Деактивированная ККМ будет скрыта из таблицы, но данные останутся в базе.</p>
+            <div class="btn-group">
+                <button class="btn btn-danger" onclick="confirmDeactivate()">Да, деактивировать</button>
+                <button class="btn btn-secondary" onclick="closeDeactivateModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
